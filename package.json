@@ -19,13 +19,14 @@
     "build": "tsc",
     "watch": "tsc -w",
     "prepublishOnly": "npm run build",
-    "postinstall": "npm run build"
+    "postinstall": "tsc"
   },
   "files": [
     "dist/",
     "src/",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "tsconfig.json"
   ],
   "dependencies": {
     "@ethereumjs/common": "^2.4.0",
