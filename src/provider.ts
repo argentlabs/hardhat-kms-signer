@@ -3,7 +3,13 @@ import {
   FeeMarketEIP1559Transaction,
   FeeMarketEIP1559TxData,
 } from "@ethereumjs/tx";
-import { BN, bufferToHex } from "ethereumjs-util";
+import {
+  BN,
+  bufferToHex,
+  hashPersonalMessage,
+  setLengthLeft,
+  toBuffer,
+} from "ethereumjs-util";
 import { rpcQuantityToBN } from "hardhat/internal/core/jsonrpc/types/base-types";
 import { rpcTransactionRequest } from "hardhat/internal/core/jsonrpc/types/input/transactionRequest";
 import { validateParams } from "hardhat/internal/core/jsonrpc/types/input/validation";
@@ -27,7 +33,26 @@ export class KMSSigner extends ProviderWrapperWithChainId {
     const method = args.method;
     const params = this._getParams(args);
 
-    if (method === "eth_sendTransaction") {
+    if (method === "eth_sign") {
+      const [address, message] = params;
+
+      const dataBuff = toBuffer(message);
+      const msgHashBuff = hashPersonalMessage(dataBuff);
+
+      const { r, s, v } = await createSignature({
+        keyId: this.kmsKeyId,
+        message: msgHashBuff,
+        address,
+      });
+
+      return bufferToHex(
+        Buffer.concat([
+          setLengthLeft(r, 32),
+          setLengthLeft(s, 32),
+          toBuffer(v.toNumber() + 27),
+        ])
+      );
+    } else if (method === "eth_sendTransaction") {
       const tx: JsonRpcTransactionData = params[0];
 
       if (tx !== undefined && tx.from === undefined) {

@@ -18,13 +18,16 @@
     "lint": "tslint --config tslint.json --project tsconfig.json",
     "build": "tsc",
     "watch": "tsc -w",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "postinstall": "tsc"
   },
   "files": [
     "dist/",
     "src/",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "@types/",
+    "tsconfig.json"
   ],
   "dependencies": {
     "@ethereumjs/common": "^2.4.0",
