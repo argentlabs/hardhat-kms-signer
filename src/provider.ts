@@ -49,7 +49,7 @@ export class KMSSigner extends ProviderWrapperWithChainId {
         Buffer.concat([
           setLengthLeft(r, 32),
           setLengthLeft(s, 32),
-          toBuffer(v.toNumber()),
+          toBuffer(v.toNumber() + 27),
         ])
       );
     } else if (method === "eth_sendTransaction") {
