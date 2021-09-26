@@ -7,8 +7,8 @@ import {
   BN,
   bufferToHex,
   hashPersonalMessage,
+  setLengthLeft,
   toBuffer,
-  toRpcSig,
 } from "ethereumjs-util";
 import { rpcQuantityToBN } from "hardhat/internal/core/jsonrpc/types/base-types";
 import { rpcTransactionRequest } from "hardhat/internal/core/jsonrpc/types/input/transactionRequest";
@@ -45,9 +45,13 @@ export class KMSSigner extends ProviderWrapperWithChainId {
         address,
       });
 
-      const rpcSig = toRpcSig(v.toNumber(), r, s);
-
-      return rpcSig;
+      return bufferToHex(
+        Buffer.concat([
+          setLengthLeft(r, 32),
+          setLengthLeft(s, 32),
+          toBuffer(v.toNumber()),
+        ])
+      );
     } else if (method === "eth_sendTransaction") {
       const tx: JsonRpcTransactionData = params[0];
 
