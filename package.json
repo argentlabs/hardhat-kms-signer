@@ -19,7 +19,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "prepublishOnly": "npm run build",
-    "postinstall": "npm install && npm run build"
+    "postinstall": "npm run build"
   },
   "files": [
     "dist/",
